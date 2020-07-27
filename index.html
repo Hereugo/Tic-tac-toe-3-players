@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Tic Tac Toe</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        body{
+            overflow: hidden;
+            margin:0;
+        }
+        img{
+            width:100vw;
+            height:100vh;
+            position: absolute;
+            top:0;
+        }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script src="vars.js"></script>
+    <script src="script.js"></script>
+    <script>
+        window.addEventListener("click" , function(event){
+            if (!STOP) {
+                if (inBlock[0] == 1) {
+                    for (let i=1; i<=B; i++)
+                        if (blocks[i][0][0] == inBlock[1][0] && blocks[i][0][1] == inBlock[1][1]) {
+                            if (blocks[i][1] != -1) return;
+                            blocks[i][1] = who;
+                            break;
+                        }
+                    let x = 0 , y = 0 , r = 0;
+                    if (who == 1) {
+                        x = inBlock[1][0] + len/2;
+                        y = inBlock[1][1] + len/2;
+                        r = len/3;
+                        DrawCircle(x , y , r);
+
+                        who = 2;
+                    } else if (who == 2){
+                        r = len/3;
+                        x = inBlock[1][0] + len/2 - r;
+                        y = inBlock[1][1] + len/2 - r;
+                        DrawRect(x , y , r);
+
+                        who = 3;
+                    } else if (who == 3) {
+                        r = len/3;
+                        x = inBlock[1][0] + len/2 - r;
+                        y = inBlock[1][1] + len/2 - r;
+                        DrawCross(x , y , r);
+                        who = 1;
+                    }
+                    chk();
+                    if (res) {
+                        STOP = true;
+                        if (who == 1) {
+                            alert("Player 3");
+                        } else if (who == 2) {
+                            alert("Player 1");
+                        } else if (who == 3) {
+                            alert("Player 2");
+                        }
+                    }
+                }
+                if (inBlock[0] == 2) {
+                    if (who == 1) 
+                        who = 2;
+                    else if (who == 2)
+                        who = 3;
+                    else if (who == 3)
+                        who = 1;
+                    ctx.beginPath();
+                    let x = inBlock[1][0];
+                    let y = inBlock[1][1];
+                    ctx.rect(x , y , len , len);
+                    ctx.stroke();
+                    blocks[++B] = [[x , y] , -1];
+                }
+                
+                ctx.beginPath();
+                ctx.rect(10 , 10 , 60+len , 5+len);
+                ctx.fillStyle = "white";
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.font = "20px Arial";
+                ctx.fillStyle = "black";
+                ctx.fillText(" - Turn" , 10+len , 10+len);
+
+                if (who == 1) {
+                    x = 11 + len/2;
+                    y = 13 + len/2;
+                    r = len/3;
+                    DrawCircle(x , y , r);
+                }
+                if (who == 2) {
+                    r = len/3;
+                    x = 11 + len/2 - r;
+                    y = 13 + len/2 - r;
+                    DrawRect(x , y , r);
+                }
+                if (who == 3) {
+                    r = len/3;
+                    x = 11 + len/2 - r;
+                    y = 13 + len/2 - r;
+                    DrawCross(x , y , r);
+                }
+            }
+        });
+    </script>
+    <script>
+        ctx.beginPath();
+        ctx.rect(10 , 10 , 60+len , 5+len);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "black";
+        ctx.fillText(" - Turn" , 10+len , 10+len);
+        if (who == 1) {
+            x = 11 + len/2;
+            y = 13 + len/2;
+            r = len/3;
+            DrawCircle(x , y , r);
+        }
+        window.addEventListener("mousemove" , function(event){
+            if (!STOP) {
+                let posmouse = [event.x, event.y];
+                for (let i=1; i<=B; i++) {
+                    let x1 = blocks[i][0][0] , x2 = blocks[i][0][0] + len;
+                    let y1 = blocks[i][0][1] , y2 = blocks[i][0][1] + len;
+                    if (x1 <= posmouse[0] && posmouse[0] <= x2 && y1 <= posmouse[1] && posmouse[1] <= y2) {
+                            inBlock = [1 , [x1 , y1]];
+                            break;
+                    } else
+                        inBlock = [0 , [-1 , -1]];
+                }
+                if (inBlock[0] == 0) {
+                    for (let i=1; i<=B; i++) {
+                        for (let j=0; j<8; j++) {
+                            let x1 = blocks[i][0][0]+X[j]*len , x2 = blocks[i][0][0]+len+X[j]*len;
+                            let y1 = blocks[i][0][1]+Y[j]*len , y2 = blocks[i][0][1]+len+Y[j]*len;
+                            if (x1 <= posmouse[0] && posmouse[0] <= x2 && y1 <= posmouse[1] && posmouse[1] <= y2) {
+                                inBlock = [2 , [x1 , y1]];
+                                break;
+                            } else
+                                inBlock = [0 , [-1 , -1]];
+                        }
+                        if (inBlock[0] == 2) break;
+                    }
+                }
+            }
+        });
+    </script>
+  </body>
+</html>
